@@ -70,7 +70,7 @@ void loop() {
   //delay(3000);
 
   //VOC
-  int reading = analogRead(A0);
+  int reading = analogRead(A2);
   Serial.print(F("VOC PPM:"));
   Serial.println(reading);
   //delay(3000);
@@ -79,13 +79,12 @@ void loop() {
   
   /*float voltage;
   voltage = getVoltage(gasSensor);
-
   Serial.print(F("MQVOC Voltage:"));
   Serial.println(voltage);
   delay(5000); */
 
-  sensorValue = analogRead(1);       // read analog input pin 0
-  Serial.print("AirQuality=");
+  sensorValue = analogRead(A3);       // read analog input pin 0
+  Serial.print("MQVOC=");
   Serial.print(sensorValue, DEC);               // prints the value read
   Serial.println(" PPM");
 
