@@ -1,4 +1,3 @@
-
 //---------------------------------------------------------------------------------------------------------------
 //                                                  LIBRARIES
 //---------------------------------------------------------------------------------------------------------------
@@ -13,7 +12,7 @@
 
 #define co2Zero     55  
 #define led          9
-#define         MQ_PIN                       (A1)     //define which analog input channel you are going to use
+#define         MQ_PIN                       (A1)    //MQ-8 Sensor
 #define         RL_VALUE                     (10)    //define the load resistance on the board, in kilo ohms
 #define         RO_CLEAN_AIR_FACTOR          (9.21)  //RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO,
 #define         CALIBARAION_SAMPLE_TIMES     (50)    //define how many samples you are going to take in the calibration phase
@@ -22,7 +21,7 @@
 #define         READ_SAMPLE_INTERVAL         (50)    //define how many samples you are going to take in normal operation
 #define         READ_SAMPLE_TIMES            (5)     //define the time interal(in milisecond) between each samples in 
                                                      //normal operation                                                    //which is derived from the chart in datasheet
-#define         GAS_H2                      (0)
+#define         GAS_H2                      (A1)     //MQ-8 Sensor
  
 
 //---------------------------------------------------------------------------------------------------------------
@@ -41,8 +40,10 @@ float           H2Curve[3]  =  {2.3, 0.93,-1.44};    //two points are taken from
  
 float           Ro           =  10;                  //Ro is initialized to 10 kilo ohms
 
-int Analog_Input = A0;
+int Analog_Input = A0; //MQ-2 Sensor
 int lpg, co, smoke;
+
+const int gasPin = A2; //MQ-4 Sensor
 
 MQ2 mq2(Analog_Input);
 
@@ -72,22 +73,20 @@ void setup()
 void loop()
 {
 
-int co2now[10];                               //int array for co2 readings
-int co2raw = 0;                               //int for raw value of co2
-int co2comp = 0;                              //int for compensated co2 
-int co2ppm = 0;                               //int for calculated ppm
-int zzz = 0;                                  //int for averaging
-int grafX = 0;                                //int for x value of graph
-
-
-  //lcd.clear();                     //clear display @ beginning of each loop
+  //CO2 Sensor
+  int co2now[10];                               //int array for co2 readings
+  int co2raw = 0;                               //int for raw value of co2
+   int co2comp = 0;                              //int for compensated co2 
+  int co2ppm = 0;                               //int for calculated ppm
+  int zzz = 0;                                  //int for averaging
+  int grafX = 0;                                //int for x value of graph
 
   for (int x = 0;x<10;x++){                   //samplpe co2 10x over 2 seconds
-    co2now[x]=analogRead(A3);
+    co2now[x]=analogRead(A3);                 //MQ-135 sensor
     delay(200);
   }
 
-for (int x = 0;x<10;x++){                     //add samples together
+  for (int x = 0;x<10;x++){                     //add samples together
     zzz=zzz + co2now[x];
     
   }
@@ -101,9 +100,10 @@ for (int x = 0;x<10;x++){                     //add samples together
   lcd.print(co2ppm);                          //print co2 ppm
   Serial.print(co2ppm);
   lcd.print("PPM");                           //print units
-  Serial.print("PPM");
-  //lcd.setCursor(0,1); 
+  Serial.println("PPM");
+  
 
+  //H2 Sensor
   lcd.setCursor(0,1);
   Serial.print("H2 Concentration:"); 
   lcd.print("H2 Level:");
@@ -112,7 +112,8 @@ for (int x = 0;x<10;x++){                     //add samples together
   Serial.print( "ppm" );
   lcd.print("ppm");
   Serial.print("\n"); 
-  //lcd.setCursor(0,1);
+
+  //LPG, CO, and SMOKE Sensor
 
   float* values= mq2.read(false); //set it false if you don't want to print the values in the Serial
   //lpg = values[0];
@@ -130,8 +131,14 @@ for (int x = 0;x<10;x++){                     //add samples together
   Serial.print("PPM \n");
   Serial.print("SMOKE: ");
   Serial.print(smoke);
-  Serial.print("PPM \n");
-  
+  Serial.println("PPM");
+
+  //Methane Sensor
+
+  Serial.print("Methane ");
+  Serial.print(analogRead(gasPin));
+  Serial.println("PPM");
+    
   delay(1000);
   
   
