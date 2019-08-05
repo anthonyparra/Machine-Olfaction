@@ -82,7 +82,7 @@ void loop()
       Serial.print(","); 
       BTserial.write(",");
       nodePayload[0] = Wire.read();
-      Serial.print((char)nodePayload[0]);
+      Serial.print(nodePayload[0]);
       BTserial.write(nodePayload[0]);
       nodePayload[1] = Wire.read();
       Serial.print(",");
