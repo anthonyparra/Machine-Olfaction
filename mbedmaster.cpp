@@ -1,78 +1,53 @@
-#include "mbed.h"
-//#include <Map.hpp>
-#include <iostream>
-#include <math.h>
+//  This is sampling code for machine olfaction
+//  Anthony Parra
+//  08-08-2019
 
-#define co2Zero 55
+
+#include "mbed.h"
+#include <iostream>
+//#include "dataranges.h" unfinished code to see if already mapped smell can be detected
 
 using namespace std;
 
-Serial pc(USBTX, USBRX); //tx and rx
-AnalogIn   ain(p16);
+AnalogIn ain1(p16);
+AnalogIn ain2(p17);
+AnalogIn ain3(p18);
+AnalogIn ain4(p19);
+AnalogIn ain5(p20);
 
-float map(float in, float inMin, float inMax, float outMin, float outMax) {
-  // check it's within the range
-  if (inMin<inMax) { 
-    if (in <= inMin) 
-      return outMin;
-    if (in >= inMax)
-      return outMax;
-  } else {  // cope with input range being backwards.
-    if (in >= inMin) 
-      return outMin;
-    if (in <= inMax)
-      return outMax;
-  }
-  // calculate how far into the range we are
-  float scale = (in-inMin)/(inMax-inMin);
-  // calculate the output.
-  return outMin + scale*(outMax-outMin);
-}
 
 int main() {
-   while (1) {
-    
-    float co2now[10];
-    float co2raw = 0;
-    float co2comp = 0;
-    float co2ppm = 0;
-    float zzz = 0;
-    
-        //printf("percentage: %f\n", ain.read());
-        //wait(1.0f);
-        
-        for (int x = 0; x < 10; x++){
-            co2now[x] = ain.read();
-            wait(0.2f);
-        }
-        
-        for (int x = 0; x < 10; x++){
-            zzz = (float) zzz + co2now[x];
-            printf("%f", zzz);
-            printf("\n");
-           
-        }
-        
-        co2raw = (float) zzz / 10;
-        printf("co2raw: %f", co2raw);
-        printf("\n");
-        co2comp = (float) co2raw - (float) co2Zero;
-        printf("co2comp: %f", co2comp);
-        printf("\n");
-        co2ppm = map(co2comp, 0, 1023, 400, 5000);
-       
-        
-        
-        printf("CO2 Concentration: ");
-        printf("%f", co2ppm);
-        printf("PPM");
-        printf("\n");
-        printf("Analog Input: ");
-        printf("%f", ain.read());
-        printf("\n");
-        
+    printf("VOC, MQ135, MQ8, MQ2, MQ4 \n");
+    while(1) {
+        unsgined int voc;
+        voc = ain1.read();
+        printf("%f",voc);
+        printf(",");
+        printf("%f",ain2.read());
+        printf(",");
+        printf("%f",ain3.read());
+        printf(",");
+        printf("%f",ain4.read());
+        printf(",");
+        printf("%f\n",ain5.read());
+        wait(1);
     }
-    
 }
+
+
+//THIS IS FOR DETECTING FEATURE (WIP) 
+
+//bool inRange(unsigned low, unsigned high, unsigned x)
+//{
+//        return ((x-low) <= (high-low));
+//}
+
+
+//void spiceInRange(){
+//    
+//    inRange(spiceVOCLower, spiceVOCUpper, voc)? cout << "Yes\n": cout << "No\n";
+//
+//}
+
 
 
